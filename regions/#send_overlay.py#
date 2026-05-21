@@ -1,0 +1,40 @@
+import time
+from io import BytesIO
+
+import cv2
+import requests
+
+def request_overlay_generation(batch, timing_dict):
+    """Send cropped overlay images to the remote generation server."""
+
+    files = {}
+
+    start_time = time.perf_counter()
+
+    for rect_id, image_np in batch:
+        success, buffer = cv2.imencode(
+            ".jpg",
+            image_np,
+            [int(cv2.IMWRITE_JPEG_QUALITY), 85],
+        )
+
+        if not success:
+            continue
+
+        files[str(rect_id)] = (
+            "image.jpg",
+            BytesIO(buffer.tobytes()),
+            "image/jpeg",
+        )
+
+        timing_dict[str(rect_id)] = start_time
+
+    try:
+        requests.post(
+            "https://19zraqksouh5uv-5000.proxy.runpod.net/process_batch",
+            files=files,
+            headers={"Accept": "multipart/mixed"},
+        )
+
+    except Exception as error:
+        print(f"[Send] Error: {error}")

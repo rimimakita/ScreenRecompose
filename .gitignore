@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Backup files
+*~
+
+# Virtual environment
+venv/
+
+# Models and weights
+models/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
+
+# Data
+data/
+
+# External repositories
+yolov5/
+
+# macOS
+.DS_Store
+
+# Local environment
+.Rhistory
+.python-version
