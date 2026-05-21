@@ -1,17 +1,12 @@
-import time
-from multiprocessing import Queue
-from queue import Full
-
 import cv2
 import mss
 import numpy as np
-import torch
+
 from Quartz import (
     CGWindowListCopyWindowInfo,
     kCGNullWindowID,
     kCGWindowListOptionOnScreenOnly,
 )
-
 
 def get_window_bounds(app_name="Google Chrome", title_substr=None):
     """
@@ -95,17 +90,6 @@ def capture_window_half_resolution(width, height):
 
         return resized_image
 
-
-def detection_results_to_list(results):
-    """
-    YOLOv5 の推論結果を list 形式へ変換する。
-    """
-    dataframe = results.pandas().xyxy[0]
-    dataframe.iloc[:, :4] = dataframe.iloc[:, :4].astype(int)
-
-    return dataframe.values.tolist()
-
-
 def estimate_vertical_scroll(previous_image, current_image, threshold=1.0):
     """
     位相相関を用いて縦方向のスクロール量を推定する。
@@ -142,77 +126,3 @@ def estimate_vertical_scroll(previous_image, current_image, threshold=1.0):
         return 0
 
     return int(round(scroll_y))
-
-
-def capture_and_detect_loop(queue: Queue, stop_event):
-    """
-    スクリーンショット取得と YOLO 推論を繰り返し実行し、
-    結果を Queue に送信する。
-    """
-    model_path = "./models/SC_sites_val_1065.pt"
-
-    model = torch.hub.load(
-        "./yolov5",
-        "custom",
-        source="local",
-        path=model_path
-    )
-
-    bounds = get_window_bounds()
-
-    if bounds is None:
-        print("Target window not found.")
-        return
-
-    _, _, capture_width, capture_height = bounds
-
-    previous_image = capture_window_half_resolution(
-        capture_width,
-        capture_height
-    )
-
-    initial_results = model(previous_image, size=320)
-
-    try:
-        queue.put_nowait((
-            previous_image[:, :, ::-1].copy(),
-            detection_results_to_list(initial_results),
-            None,
-            time.time()
-        ))
-    except Full:
-        print("[YOLO] Queue is full.")
-
-    while not stop_event.is_set():
-
-        current_image = capture_window_half_resolution(
-            capture_width,
-            capture_height
-        )
-
-        if current_image is None:
-            continue
-
-        if np.array_equal(current_image, previous_image):
-            continue
-
-        scroll_offset_y = estimate_vertical_scroll(
-            previous_image,
-            current_image
-        )
-
-        results = model(current_image, size=320)
-
-        try:
-            queue.put_nowait((
-                current_image[:, :, ::-1].copy(),
-                detection_results_to_list(results),
-                scroll_offset_y,
-                time.time()
-            ))
-        except Full:
-            print("[YOLO] Queue is full.")
-
-        previous_image = current_image.copy()
-
-    print("[YOLO] Stop event detected.")

@@ -25,7 +25,3 @@ yolov5/
 
 # macOS
 .DS_Store
-
-# Local environment
-.Rhistory
-.python-version

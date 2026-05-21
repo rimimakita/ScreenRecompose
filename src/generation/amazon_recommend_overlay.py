@@ -1,5 +1,5 @@
 import pygame
-from regions.amazon_recommend_rule import OVERLAY_WIDTH_THRESHOLD
+from regions.rule.amazon_recommend import OVERLAY_WIDTH_THRESHOLD
 
 def get_overlay_width(rect):
     """amazon_recommend 用のoverlay画像幅を決める。"""

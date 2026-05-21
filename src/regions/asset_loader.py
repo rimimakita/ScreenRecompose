@@ -1,20 +1,17 @@
 import os
 import pygame
+from paths import EOWL_DIR, OPENMOJI_DIR
 
 words = []
 icons = []
+
 
 def load_all_words_from_eowl():
     """EOWL辞書から単語を読み込む。"""
 
     words = []
-    base_dir = "data/EOWL-v1.1.2/LF Delimited Format"
 
-    for filename in os.listdir(base_dir):
-        if not filename.endswith(".txt"):
-            continue
-
-        path = os.path.join(base_dir, filename)
+    for path in EOWL_DIR.glob("*.txt"):
 
         with open(path, "r", encoding="utf-8") as file:
             for line in file:
@@ -31,20 +28,17 @@ def load_all_icons_from_openmoji():
 
     icons = []
 
-    for filename in os.listdir("data/openmoji-72x72-color"):
-        if not filename.endswith(".png"):
-            continue
-
-        path = os.path.join("data/openmoji-72x72-color", filename)
+    for path in OPENMOJI_DIR.glob("*.png"):
 
         try:
-            icon_surface = pygame.image.load(path).convert_alpha()
+            icon_surface = pygame.image.load(str(path)).convert_alpha()
             icons.append(icon_surface)
 
         except Exception as error:
-            print(f"[IconLoadError] {filename}: {error}")
+            print(f"[IconLoadError] {path.name}: {error}")
 
     return icons
+
 
 
 def initialize_assets():

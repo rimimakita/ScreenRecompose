@@ -1,7 +1,7 @@
 import time
 from multiprocessing import Event, Manager, Process, Queue
 
-from detection.recognition import capture_and_detect_loop
+from detection.detection_loop import capture_detection_loop
 from rendering.click_process import click_process
 from rendering.transparent_window import transparent_window
 
@@ -50,7 +50,7 @@ def main():
 
         processes = [
             Process(
-                target=capture_and_detect_loop,
+                target=capture_detection_loop,
                 args=(detection_queue, stop_event),
             ),
             Process(
