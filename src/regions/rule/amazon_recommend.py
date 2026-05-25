@@ -32,13 +32,13 @@ def update_rect(
     raw_rect が既存の recommend 矩形に対応する場合は更新する。
     既存矩形に対応しなければ True を返す。
     """
-
-    # x1, y1, x2, y2, color, label = raw_rect
     x1, y1, x2, y2 = get_adjusted_box(result)
     new_box = (x1, y1, x2, y2)
     new_height = y2 - y1
 
     for old_rect in updated_rects:
+        if old_rect.label != "amazon_recommend":
+            continue
         if old_rect.rect.bottom <= 0 or old_rect.rect.top >= window_height:
             old_rect.fix = True
             continue

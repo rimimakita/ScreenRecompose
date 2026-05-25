@@ -21,16 +21,52 @@ def normalize_amazon_text_rect(x1, y1, x2, y2):
         return x1, y1, x2, y2
 
 
-def update_rect(result, existing_rects):
+# def update_rect(result, existing_rects):
+#     """
+#     amazon_name 用の矩形を追加できるか判定する。
+#     既存矩形と横方向に重複する場合は、上側の矩形の座標に更新して False を返す。
+#     重複しない場合は True を返す。
+#     """
+
+#     x1, y1, x2, y2 = get_adjusted_box(result)
+
+#     for old_rect in existing_rects:
+#         is_overlapping_x = not (
+#             x2 <= old_rect.rect.left or old_rect.rect.right <= x1
+#         )
+
+#         if not is_overlapping_x:
+#             continue
+
+#         if y1 < old_rect.rect.top:
+#             old_rect.rect.top = y1
+#             old_rect.rect.bottom = y2
+
+#         return False
+
+#     return True
+
+
+
+def update_rect(
+    updated_rects,
+    result,
+    window_height=None,
+    add_overlay_crops=None
+):
     """
     amazon_name 用の矩形を追加できるか判定する。
-    既存矩形と横方向に重複する場合は、上側の矩形の座標に更新して False を返す。
-    重複しない場合は True を返す。
+    既存のamazon_name矩形と横方向に重複する場合は、
+    上側の矩形の座標に更新してFalseを返す。
+    重複しない場合はTrueを返す。
     """
 
     x1, y1, x2, y2 = get_adjusted_box(result)
 
-    for old_rect in existing_rects:
+    for old_rect in updated_rects:
+        if old_rect.label != "amazon_name":
+            continue
+
         is_overlapping_x = not (
             x2 <= old_rect.rect.left or old_rect.rect.right <= x1
         )
@@ -46,8 +82,7 @@ def update_rect(result, existing_rects):
 
     return True
 
-
-def create_rect(result):
+def create_rect(result, add_overlay_crops=None):
     """amazon_name / amazon_address 用のRectObjectを作成する。"""
 
     x1, y1, x2, y2 = get_adjusted_box(result)

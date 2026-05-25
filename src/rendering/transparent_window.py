@@ -42,6 +42,7 @@ def start_overlay_receiver(stop_event, timing_dict):
     )
     receive_thread.start()
 
+
 def render_screen(
     screen,
     image_bgr,
@@ -59,14 +60,7 @@ def render_screen(
 
     draw.draw_rectangles(
         screen,
-        rect_manager.stored_scroll_rectangles,
-        height,
-        image_bgr
-    )
-
-    draw.draw_rectangles(
-        screen,
-        rect_manager.stored_amazon_name_rectangles,
+        rect_manager.stored_rectangles,
         height,
         image_bgr
     )
@@ -74,6 +68,7 @@ def render_screen(
     screen.set_clip(None)
 
     pygame.display.update()
+
 
 
 def transparent_window(queue: Queue, shared_position_data, stop_event):

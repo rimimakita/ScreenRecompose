@@ -16,9 +16,10 @@ from rendering.color_manager import LABEL_COLORS
 # Constants
 # =========================================================
 
-FIXED_LABELS = {"chrome_tab", "chrome_bookmark"}
-
-OVERLAY_TARGET_LABELS = {"amazon_recommend"}
+SCROLL_TARGET_LABELS = {
+    "amazon_recommend",
+    "amazon_name",
+}
 
 MAX_KEEP_MARGIN = 1500
 
@@ -27,10 +28,35 @@ overlay_lock = threading.Lock()
 # Shared state
 # =========================================================
 
-stored_scroll_rectangles = []
-stored_amazon_name_rectangles = []
+# stored_scroll_rectangles = []
+# stored_amazon_name_rectangles = []
 chrome_tab_info = None
+stored_rectangles = []
 
+LABEL_RULES = {
+    "amazon_recommend": amazon_recommend,
+    "amazon_name": amazon_name,
+    "amazon_address": amazon_name,
+}
+
+
+# def handle_initial_result(result, add_overlay_crops):
+#     """初期検出時のresultを処理する。"""
+
+#     global chrome_tab_info
+
+#     label = result[6]
+
+#     if label == "chrome_tab":
+#         chrome_tab_info = create_chrome_tab_info(result)
+
+#     elif label == "amazon_recommend":
+#         rect = amazon_recommend.create_rect(result, add_overlay_crops)
+#         stored_scroll_rectangles.append(rect)
+
+#     elif label in ("amazon_name", "amazon_address"):
+#         rect = amazon_name.create_rect(result)
+#         stored_amazon_name_rectangles.append(rect)
 
 def handle_initial_result(result, add_overlay_crops):
     """初期検出時のresultを処理する。"""
@@ -41,14 +67,49 @@ def handle_initial_result(result, add_overlay_crops):
 
     if label == "chrome_tab":
         chrome_tab_info = create_chrome_tab_info(result)
+        return
 
-    elif label == "amazon_recommend":
-        rect = amazon_recommend.create_rect(result, add_overlay_crops)
-        stored_scroll_rectangles.append(rect)
+    rule = LABEL_RULES.get(label)
 
-    elif label in ("amazon_name", "amazon_address"):
-        rect = amazon_name.create_rect(result)
-        stored_amazon_name_rectangles.append(rect)
+    if rule is None:
+        return
+
+    rect = rule.create_rect(result, add_overlay_crops)
+
+    stored_rectangles.append(rect)
+    
+
+# def handle_scrolled_result(result, updated_rects, window_height, add_overlay_crops):
+#     """スクロール後のresultを処理する。"""
+
+#     label = result[6]
+
+#     if label == "chrome_tab":
+#         return
+
+#     if label in ("amazon_name", "amazon_address"):
+#         should_add_new_rect = amazon_name.update_rect(
+#             result,
+#             stored_amazon_name_rectangles
+#         )
+
+#         if should_add_new_rect:
+#             rect = amazon_name.create_rect(result)
+#             stored_amazon_name_rectangles.append(rect)
+
+#         return
+
+#     if label == "amazon_recommend":
+#         should_add_new_rect = amazon_recommend.update_rect(
+#             updated_rects,
+#             result,
+#             window_height,
+#             add_overlay_crops
+#         )
+
+#         if should_add_new_rect:
+#             rect = amazon_recommend.create_rect(result, add_overlay_crops)
+#             updated_rects.append(rect)
 
 def handle_scrolled_result(result, updated_rects, window_height, add_overlay_crops):
     """スクロール後のresultを処理する。"""
@@ -58,36 +119,30 @@ def handle_scrolled_result(result, updated_rects, window_height, add_overlay_cro
     if label == "chrome_tab":
         return
 
-    if label in ("amazon_name", "amazon_address"):
-        should_add_new_rect = amazon_name.update_rect(
-            result,
-            stored_amazon_name_rectangles
-        )
+    rule = LABEL_RULES.get(label)
 
-        if should_add_new_rect:
-            rect = amazon_name.create_rect(result)
-            stored_amazon_name_rectangles.append(rect)
-
+    if rule is None:
         return
 
-    if label == "amazon_recommend":
-        should_add_new_rect = amazon_recommend.update_rect(
-            updated_rects,
-            result,
-            window_height,
-            add_overlay_crops
-        )
+    
+    should_add_new_rect = rule.update_rect(
+        updated_rects,
+        result,
+        window_height,
+        add_overlay_crops
+    )
 
-        if should_add_new_rect:
-            rect = amazon_recommend.create_rect(result, add_overlay_crops)
-            updated_rects.append(rect)
+    if should_add_new_rect:
+        rect = rule.create_rect(result, add_overlay_crops)
+        updated_rects.append(rect)
+
 
 
 def update_stored_rectangles(detection_results, scroll_offset_y, window_height, timing_dict=None, image_np=None):
     """検出結果とスクロール量をもとに、保持している矩形情報を更新する。"""
 
-    global chrome_tab_info
-    global stored_scroll_rectangles, stored_amazon_name_rectangles
+    global chrome_tab_info, stored_rectangles
+    # global stored_scroll_rectangles, stored_amazon_name_rectangles
 
     overlay_batch = []
 
@@ -96,8 +151,13 @@ def update_stored_rectangles(detection_results, scroll_offset_y, window_height, 
         """overlay生成用cropをバッチへ追加する。"""
         if image_np is None:
             return
+
+        rule = LABEL_RULES.get(rect_obj.label)
+
+        if rule is None:
+            return
         
-        crops = amazon_recommend.build_crops(
+        crops = rule.build_crops(
             image_np,
             rect_obj
         )
@@ -108,8 +168,9 @@ def update_stored_rectangles(detection_results, scroll_offset_y, window_height, 
     with overlay_lock:
         if scroll_offset_y is None:
             
-            stored_scroll_rectangles.clear()
-            stored_amazon_name_rectangles.clear()
+            # stored_scroll_rectangles.clear()
+            # stored_amazon_name_rectangles.clear()
+            stored_rectangles.clear()
             LABEL_COLORS.clear()
             chrome_tab_info = None
 
@@ -121,14 +182,19 @@ def update_stored_rectangles(detection_results, scroll_offset_y, window_height, 
                 chrome_tab_info = create_chrome_tab_info(None)
 
         else:
-            for rect in stored_scroll_rectangles:
-                rect.move(scroll_offset_y)
+            # for rect in stored_scroll_rectangles:
+            #     rect.move(scroll_offset_y)
 
         
-            for rect in stored_amazon_name_rectangles:
+            # for rect in stored_amazon_name_rectangles:
+            #     rect.move(scroll_offset_y)
+
+            # updated_rects = stored_scroll_rectangles[:]
+
+            for rect in stored_rectangles:
                 rect.move(scroll_offset_y)
 
-            updated_rects = stored_scroll_rectangles[:]
+            updated_rects = stored_rectangles[:]
 
             for result in detection_results:
                 handle_scrolled_result(
@@ -139,7 +205,7 @@ def update_stored_rectangles(detection_results, scroll_offset_y, window_height, 
                 )
 
 
-            stored_scroll_rectangles[:] = [
+            stored_rectangles[:] = [
                 rect for rect in updated_rects
                 if (
                         rect.rect.bottom >= -MAX_KEEP_MARGIN
