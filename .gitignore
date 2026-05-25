@@ -5,6 +5,8 @@ __pycache__/
 
 # Backup files
 *~
+#*#
+.#*
 
 # Virtual environment
 venv/
