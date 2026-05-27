@@ -1,182 +1,74 @@
-# ScreenRecompose
-
-Semantic-aware generative content replacement system for privacy protection during screen sharing.
+# ScreenRecompose: Screen Privacy Protection System Using Generative Content Replacement
 
 ## Overview
 
-ScreenRecompose is a real-time privacy protection system for screen sharing environments such as online meetings.
+This system is designed to protect private information during screen sharing by detecting sensitive regions on the screen and replacing them with visually plausible, semantically related generated content.
 
-Instead of conventional masking or blurring methods, the system replaces private regions with semantically appropriate generated content to preserve visual naturalness and contextual consistency.
+Rather than simply hiding private information with masks or blur, the system aims to preserve the visual context of the shared screen while reducing the risk of exposing private information. The current implementation continuously captures a Chrome window in real time, processes the captured screen content, and displays a newly generated replacement window with replaced content.
 
-The system combines:
+## Demo
 
-- Object detection
-- Semantic region management
-- Caption generation
-- Image generation
-- Real-time overlay rendering
-
-to provide visually natural obfuscation during screen sharing.
-
----
+![Demo](assets/demo_small.gif)
 
 ## Features
 
 - Real-time screen privacy protection
-- Semantic-aware content replacement
-- YOLO-based private information detection
-- Context-preserving image generation
-- Overlay-based rendering system
+- Real-time screen capture and private information detection
+- Generative AI-based semantic-aware content replacement
 - Scroll-aware region management
-- Asynchronous image generation pipeline
-- Cached overlay reuse for responsiveness
+- Asynchronous client-server generation pipeline
+- Cached overlay reuse
 
----
+## System Pipeline
 
-## System Architecture
+1. Capture live screen content
+2. Detect private regions
+3. Manage regions based on detection labels
+4. Generate replacement content asynchronously
+5. Render the processed screen in real time
 
-```text
-Screen Capture
-      ↓
-Object Detection (YOLOv5)
-      ↓
-Region Management
-      ↓
-Caption Generation
-      ↓
-Image Generation
-      ↓
-Overlay Rendering
-      ↓
-Protected Screen Output
-```
+![Pipeline](assets/pipeline.png)
 
----
-
-## Project Structure
+## Directory Structure
 
 ```text
-ScreenRecompose/
-├── src/
-│   ├── detection/
-│   ├── generation/
-│   ├── models/
-│   ├── regions/
-│   ├── rendering/
-│   └── main.py
-│
-├── data/
-├── models/
-├── outputs/
-├── requirements.txt
+project/
 ├── README.md
-└── .gitignore
+├── requirements.txt
+├── assets/
+└── src/
+    ├── main.py        # Main entry point
+    ├── paths.py       # Path configuration
+    ├── detection/     # Screen capture and private information detection
+    ├── generation/    # Client-side replacement content handling
+    ├── regions/       # Region management and label-specific rules
+    ├── rendering/     # Overlay-based screen rendering
+    └── server/        # Server-side content generation API
 ```
-
----
 
 ## Requirements
 
 - Python 3.10+
 - macOS recommended
-- GPU recommended for image generation
-
-Main libraries:
-
-- pygame
-- torch
-- ultralytics
-- opencv-python
-- numpy
-- requests
-- flask
-
----
-
-## Installation
-
-Clone the repository:
-
-```bash
-git clone https://github.com/yourname/ScreenRecompose.git
-cd ScreenRecompose
-```
-
-Create a virtual environment:
-
-```bash
-python -m venv venv
-source venv/bin/activate
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## Running
-
-```bash
-cd src
-python main.py
-```
-
----
+- Apple Silicon MacBook Pro recommended for stable real-time processing
+- GPU recommended for image generation (e.g., RTX 4090)
 
 ## Models
 
-Place required models in the `models/` directory.
+The system was developed using the following models:
 
-Example:
+- YOLOv5-based private information detector
+- BLIP-2
+- SDXL Turbo
 
-```text
-models/
-├── yolov5.pt
-├── sdxl_turbo/
-└── blip2/
-```
+## External Resources
 
----
+This project uses the following external resources:
 
-## Data
-
-Place required datasets and resources in the `data/` directory.
-
-Example:
-
-```text
-data/
-├── EOWL-v1.1.2/
-└── icons/
-```
-
----
+- EOWL-v1.1.2
+- OpenMoji (openmoji-72x72-color)
 
 ## Notes
 
-- Large model files are excluded from Git tracking.
-- Generated outputs and cache files are ignored by `.gitignore`.
-- This repository mainly contains implementation code.
-
----
-
-## Research Context
-
-This project was developed as part of research on privacy protection during screen sharing using generative AI.
-
-The system focuses on preserving:
-
-- viewing experience
-- contextual understanding
-- visual naturalness
-
-while reducing perceived identifiability of private information.
-
----
-
-## License
-
-MIT License
+- Detection and generation models are not included in this repository.
+- The current public version supports only the Amazon top page used in the demo environment.
