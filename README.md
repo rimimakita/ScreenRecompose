@@ -70,5 +70,15 @@ This project uses the following external resources:
 
 ## Notes
 
+- This repository provides a partial research prototype implementation.
 - Detection and generation models are not included in this repository.
 - The current public version supports only the Amazon top page used in the demo environment.
+
+## Related Publications
+
+* UIST 2025
+  *Context-Preserving Content Replacement for Privacy Protection in Screen Sharing with Generative AI*
+  https://dl.acm.org/doi/10.1145/3746058.3758442
+
+* ACM ISS 2026
+  Accepted paper (to appear)
