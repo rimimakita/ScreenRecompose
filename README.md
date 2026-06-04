@@ -8,6 +8,8 @@ Rather than simply hiding private information with masks or blur, the system aim
 
 ## Demo
 
+Example of the system applied to the Amazon homepage. The screen on the right shows the original page, including purchase history and recommended products. The screen on the left shows the protected view, where product regions are replaced with generated content. The replacement content follows scrolling operations on the original page in real time.
+
 ![Demo](assets/demo_small.gif)
 
 ## Features
