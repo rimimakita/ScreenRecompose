@@ -1,3 +1,11 @@
+"""
+transparent_window.py
+
+描画プロセスの中心となるファイル。
+
+Queueから受け取った画面画像と検出結果をもとに、
+Pygame上で保護画面をリアルタイムに描画する。
+"""
 import os
 import threading
 import time

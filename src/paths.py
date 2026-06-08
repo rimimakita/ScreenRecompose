@@ -1,3 +1,8 @@
+"""
+paths.py
+
+プロジェクト内で使用するディレクトリパスを管理する。
+"""
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent

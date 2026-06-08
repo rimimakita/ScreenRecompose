@@ -1,4 +1,9 @@
-"""メモ：build_chrome_tab_surface関数は役割ごとにもう少し細分化する"""
+"""
+chrome_tab_builder.py
+
+Chromeタブ領域の情報を生成し、
+Chromeタブ風の表示用Surfaceを構築する。
+"""
 import random
 import pygame
 

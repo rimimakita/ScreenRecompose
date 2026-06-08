@@ -1,3 +1,9 @@
+"""
+asset_loader.py
+
+描画に使用する単語辞書とアイコン画像を読み込み、
+共有アセットを初期化する。
+"""
 import os
 import pygame
 from paths import EOWL_DIR, OPENMOJI_DIR

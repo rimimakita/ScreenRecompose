@@ -1,3 +1,11 @@
+"""
+detection_loop.py
+
+検出プロセスの中心となるファイル。
+
+対象ウィンドウのスクリーンショット取得、スクロール量推定、
+YOLOによる物体検出を行い、検出結果を描画プロセスへ送信する。
+"""
 import time
 from multiprocessing import Queue
 from queue import Full

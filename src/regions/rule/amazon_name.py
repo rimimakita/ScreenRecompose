@@ -1,3 +1,9 @@
+"""
+amazon_name.py
+
+amazon_name系ラベルに対する
+矩形管理ルールを定義する。
+"""
 from regions.rect_object import RectObject
 from regions.utils import get_adjusted_box
 

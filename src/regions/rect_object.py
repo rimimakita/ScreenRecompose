@@ -1,4 +1,11 @@
-"""メモ：label固有の追加情報は meta に入れる。"""
+"""
+rect_object.py
+
+矩形管理の基盤となるデータ構造を定義する。
+
+検出領域の位置情報、状態情報、
+overlay関連情報を保持する。
+"""
 import itertools
 from dataclasses import dataclass
 import pygame

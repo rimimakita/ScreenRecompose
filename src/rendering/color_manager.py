@@ -1,3 +1,9 @@
+"""
+color_manager.py
+
+矩形領域から代表的な背景色を抽出し、
+ラベルごとの色情報を管理する。
+"""
 from collections import Counter
 
 

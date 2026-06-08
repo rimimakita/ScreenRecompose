@@ -1,3 +1,9 @@
+"""
+send_batch.py
+
+切り出した画像をバッチ化して生成サーバへ送信し、
+生成処理を依頼する。
+"""
 import time
 from io import BytesIO
 

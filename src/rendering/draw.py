@@ -1,3 +1,9 @@
+"""
+draw.py
+
+矩形(overlay画像、テキストなど)の
+画面描画処理を管理する。
+"""
 import pygame
 
 from regions import rect_manager
@@ -29,7 +35,7 @@ def draw_chrome_tab(screen, image_np):
     screen.blit(tab.surface, icon_position)
 
 def draw_rectangles(screen, rects, height, image_np):
-    """矩形、overlay画像、テキストを描画する。"""
+    """overlay画像、テキストを描画する。"""
 
     for rect_obj in rects:
         rect = rect_obj.rect

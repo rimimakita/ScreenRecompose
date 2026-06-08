@@ -1,3 +1,9 @@
+"""
+amazon_recommend.py
+
+amazon_recommend領域に対する
+矩形生成・更新・結合・overlay用crop生成ルールを定義する。
+"""
 import random
 
 from regions.rect_object import RectObject

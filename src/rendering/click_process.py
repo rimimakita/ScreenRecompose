@@ -1,3 +1,11 @@
+"""
+click_process.py
+
+（現在は未使用）
+
+マウスクリックを監視し、
+クリック位置を他プロセスへ共有する。
+"""
 from pynput import mouse
 from multiprocessing import Queue, Manager
 import pyautogui

@@ -1,3 +1,9 @@
+"""
+screen_capture.py
+
+対象ウィンドウの取得、スクリーンショット撮影、
+スクロール量推定を行う関数。
+"""
 import cv2
 import mss
 import numpy as np

@@ -1,3 +1,11 @@
+"""
+rect_manager.py
+
+矩形管理の中心となるファイル。
+
+検出結果の追加・更新・削除、スクロール追従、
+chrome_tab管理、およびoverlay生成依頼を行う。
+"""
 import time
 from io import BytesIO
 import threading

@@ -1,3 +1,9 @@
+"""
+amazon_recommend.py
+
+amazon_recommend領域に対するOverlay Surfaceの
+サイズ決定および合成ルールを管理する。
+"""
 import pygame
 from regions.rule.amazon_recommend import OVERLAY_WIDTH_THRESHOLD
 

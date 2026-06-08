@@ -1,3 +1,9 @@
+"""
+overlay_surface_setter.py
+
+サーバから受信した生成画像を矩形に対応づけ、
+描画用のOverlay Surfaceとキャプションを更新する。
+"""
 import cv2
 import pygame
 

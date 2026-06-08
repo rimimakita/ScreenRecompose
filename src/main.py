@@ -1,3 +1,11 @@
+"""
+main.py
+
+システムのエントリーポイント。
+
+検出プロセス、描画プロセス、クリック処理を起動し、
+プロセス全体の実行と終了を管理する。
+"""
 import time
 from multiprocessing import Event, Manager, Process, Queue
 

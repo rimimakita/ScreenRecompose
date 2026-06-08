@@ -1,3 +1,9 @@
+"""
+receive_overlay.py
+
+生成サーバから生成画像を受信し、
+対応する矩形へ反映する受信処理を管理する。
+"""
 import base64
 import time
 

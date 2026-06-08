@@ -1,3 +1,9 @@
+"""
+text_renderer.py
+
+矩形上に表示するキャプションの整形と
+テキスト描画を管理する。(amazon_recommend領域専用処理)
+"""
 def wrap_text_to_two_lines(text, TEXT_FONT, max_width):
     """指定幅に収まるようにテキストを最大2行に分割する。"""
     words = text.split()
